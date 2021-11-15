@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ryu.mapper.BoardMapper">
+
+	<insert id="setInsert">
+		insert into tbl_board(no, title, writer, content) values(seq_board.nextval, #{title},  #{writer},  #{content})
+	</insert>
+	
+	<select id="getList" resultType="com.ryu.dto.BoardDTO">
+	
+		<![CDATA[
+		SELECT no, title, writer, content, regidate
+			FROM tbl_board
+			WHERE no > 0 
+		]]>
+	</select>
+	
+	<select id="getRead" resultType="com.ryu.dto.BoardDTO">
+		
+		SELECT no, title, writer, content, regidate
+			FROM tbl_board
+			WHERE no = #{no}
+		
+	</select>
+	
+	<delete id="setDelete">
+		DELETE FROM tbl_board 
+			WHERE no = #{no}
+	</delete>
+	
+	<update id="setUpdate">
+		UPDATE tbl_board 
+			SET title = #{title}, content = #{content}, writer = #{writer}
+			WHERE no = #{no}
+	</update>
+	
+</mapper>

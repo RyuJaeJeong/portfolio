@@ -1,0 +1,13 @@
+CREATE TABLE tbl_board (
+no number not null primary key,
+title varchar2(1000) not null,
+writer varchar2(50) not null,
+content clob not null, 
+regidate date DEFAULT sysdate
+);
+
+commit;
+
+CREATE SEQUENCE seq_board 
+INCREMENT BY 1
+START WITH 1;

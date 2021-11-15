@@ -33,6 +33,6 @@
 		<tx:annotation-driven/>
 		
 		<mybatis-spring:scan base-package="com.ryu.mapper"/>
-		<context:component-scan base-package="com.ryu.service"></context:component-scan>
+		<context:component-scan base-package="com.ryu.controller"></context:component-scan>
 		<aop:aspectj-autoproxy></aop:aspectj-autoproxy>	
 </beans>
