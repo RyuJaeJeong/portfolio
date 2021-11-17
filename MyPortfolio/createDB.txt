@@ -1,13 +1,36 @@
 CREATE TABLE tbl_board (
-no number not null primary key,
+no number not null,
 title varchar2(1000) not null,
 writer varchar2(50) not null,
 content clob not null, 
 regidate date DEFAULT sysdate
 );
 
-commit;
+
 
 CREATE SEQUENCE seq_board 
 INCREMENT BY 1
 START WITH 1;
+
+
+CREATE TABLE tbl_reply(
+no number not null,
+board_no number not null,
+reply varchar2(1000) not null,
+replyer VARCHAR2(50) not null,
+replydate date DEFAULT sysdate
+);
+
+CREATE SEQUENCE seq_reply 
+INCREMENT BY 1
+START WITH 1;
+
+commit;
+
+ALTER TABLE tbl_board add (replyCnt number default 0);
+
+ALTER TABLE TBL_BOARD ADD CONSTRAINT PK_BOARD PRIMARY KEY(NO);
+
+ALTER TABLE TBL_REPLY ADD CONSTRAINT PK_REPLY PRIMARY KEY(NO);
+
+ALTER TABLE tbl_reply ADD CONSTRAINT FK_board_no FOREIGN KEY(board_no) REFERENCES tbl_board(no) on DELETE CASCADE;

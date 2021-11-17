@@ -10,9 +10,13 @@ import lombok.Data;
 public class BoardDTO {
 	
 	//field 
+	private long rownum;
 	private long no;
 	private String title;
 	private String writer;
 	private String content;
 	private Date regidate;
+	private int replyCnt;
+	private long mgr;
+	private int level;
 }
