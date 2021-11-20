@@ -13,11 +13,11 @@ public interface ReplyMapper {
 	
 	public List<ReplyDTO> getListWithPaging(@Param("cri") Criteria cri, @Param("bno") long bno);
 	
-	public ReplyDTO get(long no);
+	public ReplyDTO get(long rno);
 	
-	public int getCountByBno(long board_no);
+	public int getCountByBno(long bno);
 	
-	public int delete (long no);
+	public int delete (long rno);
 	
 	public int update(ReplyDTO dto);
 	

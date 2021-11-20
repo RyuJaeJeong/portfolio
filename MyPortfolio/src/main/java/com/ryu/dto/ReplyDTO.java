@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 public class ReplyDTO {
-	private long no;
-	private long board_no;
+	private long rno;
+	private long bno;
 	private String reply;
 	private String replyer;
 	private Date replyDate;

@@ -11,7 +11,7 @@ public class BoardDTO {
 	
 	//field 
 	private long rownum;
-	private long no;
+	private long bno;
 	private String title;
 	private String writer;
 	private String content;

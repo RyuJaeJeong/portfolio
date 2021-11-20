@@ -4,12 +4,13 @@
 
 <div>
 	<div style="">
-		<h3>modify Page</h3>
+		<h3>수정 페이지</h3>
 	</div>
 	<div style="">
 		<form name="modifyForm" id='modifyForm'>
 			<input type="hidden" id="method" name="_method"/>
-			<input class="form-control" type="hidden" name="no" value='<c:out value="${dto.no}" />'>
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+			<input class="form-control" type="hidden" name="no" value='<c:out value="${dto.bno}" />'>
 			<input type="hidden" name='pageNumber' value = '<c:out value="${cri.pageNumber}" />'>
    			<input type="hidden" name='amount' value = '<c:out value="${cri.amount}" />'>
    			<input type="hidden" name='type' value='<c:out value="${cri.type}" />' />
@@ -27,8 +28,14 @@
 			    <input class="form-control" name="writer"  value='<c:out value="${dto.writer }" />'>
 			</div>		
 			<button type="button" onclick="goList()">리스트</button>
-			<button type="button" onclick="goModify('${dto.no}')">수정하기</button>
-			<button type="button" onclick="goDelete('${dto.no}')">삭제하기</button>
+			<sec:authentication property="principal" var="pinfo"/>
+				<sec:authorize access="isAuthenticated()">
+                       <c:if test="${pinfo.username eq dto.writer}">				
+                         	<button type="button" onclick="goModify('${dto.bno}')">수정하기</button>
+							<button type="button" onclick="goDelete('${dto.bno}')">삭제하기</button>			
+                       	</c:if>	
+               </sec:authorize>
+			
 		</form>	
 	</div>
 	
@@ -52,7 +59,7 @@
 	function goModify(value1) {
 		modifyForm.method = "post" 
 		$("input:hidden[name=_method]").val("put");
-		modifyForm.action = "/board/modify/"+value1
+		modifyForm.action = "/board/"+value1
 		modifyForm.submit();
 	}
 	

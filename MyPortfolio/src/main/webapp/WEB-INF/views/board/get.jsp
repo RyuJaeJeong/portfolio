@@ -9,7 +9,7 @@
 	<div style="">
 		<form name="readForm" method="get" >
 			<input type="hidden" id="method" name="_method"/>
-			<input class="form-control" type="hidden" name="no" value='<c:out value="${dto.no }" />' readonly="readonly">
+			<input class="form-control" type="hidden" name="bno" value='<c:out value="${dto.bno }" />' readonly="readonly">
 			<div class="form-group">
 				<label>제목</label> 
 				<input class="form-control" name="title" value='<c:out value="${dto.title }" />' readonly="readonly">
@@ -23,8 +23,17 @@
 			    <textarea class="form-control" rows="8" cols="85" name="content" readonly><c:out value="${dto.content}" /></textarea>
 			</div>	
 				<button type="button" onclick="goList()">리스트</button>
-				<button type="button" onclick="goRewrite('${dto.no}')">답변하기</button>
-				<button type="button" onclick="goModifyForm('${dto.no}')">수정하기</button>
+				<button type="button" onclick="goAnswer('${dto.bno}')">답변하기</button>
+				
+				<sec:authentication property="principal" var="pinfo"/>
+				<sec:authorize access="isAuthenticated()">
+                       <c:if test="${pinfo.username eq dto.writer}">				
+                         	<button type="button" onclick="goModifyForm('${dto.bno}')">수정하기</button>				
+                       	</c:if>	
+               </sec:authorize>
+				
+				
+				
 		</form>	
 		<form id='operForm' method="get">
   			<input type="hidden" name='pageNumber' value = '<c:out value="${cri.pageNumber}" />'>
@@ -34,18 +43,29 @@
   		</form>
 	</div>
 </div>		
+
+			
+	  							
+	  						
 			<div style=" background-color: #F5F5F5; border: 1px solid black;">
  				<form name="replyForm" id="replyForm">
- 					<input type="hidden" name="board_no" value='<c:out value="${dto.no }" />'>
+ 					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+ 					<input type="hidden" name="bno" value='<c:out value="${dto.bno }" />'>
 	  				<div style="padding:5px">
 	  					<label>댓글</label><br />
 	  				</div>
 	  				<div style="padding:5px" align="right">
-	  					<label>작성자</label> <input type="text" name="replyer" id="replyer">
+	  					<label>작성자</label> 
+	  						<sec:authorize access="isAnonymous()">
+	  							<input type="text" name="replyer" id="replyer" value='' readonly>
+	  						</sec:authorize>
+	  						<sec:authorize access="isAuthenticated()">
+	  							<input type="text" name="replyer" id="replyer" value='${pinfo.username}' readonly>
+	  						</sec:authorize>
 	  				</div>	
-	  					<textarea rows="4" cols="42" style="width: 100%; height: 80px; padding: 10px; box-sizing: border-box; border: 2px solid #EEEEE; box-sizing: border-box; border-radius: 6px; font-size: 16px;resize: both;" name="reply" id="reply"></textarea>
+	  					<textarea rows="4" cols="42" class="replyarea" name="reply" id="reply"></textarea>
 	  				<div align="right">
-	  					<button type="button" onclick="add()" style="margin: 5px">등록하기</button>
+	  					<button type="button" onclick="add()" style="margin: 5px">등록하기</button>	
 	  				</div>
  				</form>	
 	         </div>
@@ -84,23 +104,37 @@
 
 <%@include file="../includes/footer.jsp" %>
 <script>
+$(document).ready(function(){
+	
+	if (typeof jQuery == 'undefined') {
+
+		alert("없음");
+
+		}else{
+
+		alert("있음");
+
+		}
+	
+});
+
 	function goList() {
 		operForm.action = "/board";
 		operForm.submit();
 	}
 	
-	function goRewrite(value1) {
-		location.href = "/board/write/"+value1;
+	function goAnswer(value1) {
+		location.href = "/board/"+value1 +"/answer";
 	}
 	
 	function goModifyForm(value1) {
-		operForm.action = "/board/modify/"+value1;
+		operForm.action = "/board/"+value1+"/edit";
 		operForm.submit();
 	}
 	/*----------------------댓글 관련 처리들--------------------------------*/
 	
 	//게시글 pk
-	var board_no = '<c:out value="${dto.no}"/>';
+	var bno = '<c:out value="${dto.bno}"/>';
 	//댓글 리스트 부분
 	var replyUL = $(".chat");
 	//댓글 페이져 부분 
@@ -108,11 +142,14 @@
 	//댓글 폼
 	var replyForm = $("#replyForm");
 	var pageNumber = 1;
-	
-	
+	<sec:authorize access="isAuthenticated()">
+		replyer = '<sec:authentication property="principal.username" />';
+	</sec:authorize>
+	var csrfHeaderName = "${_csrf.headerName}";
+	var csrfTokenValue = "${_csrf.token}"
 	
 	$(document).ready(function(){
-		getList(board_no, pageNumber)
+		getList(bno, pageNumber)
 	});
 	
 	//댓글 리스트 불러오기
@@ -137,24 +174,32 @@
 					//댓글 출력
 					for(var i = 0, len = data.list.length || 0; i < len; i++) {
 						str+="<li class='left clearfix'>"; 
-						str+="	<div  id='p-false"+data.list[i].no+"'><div class='header' style='display: flex;'><div style='width : 50%;'><strong class'primary-font'>"+data.list[i].replyer+"</strong>";
+						str+="	<div  id='p-false"+data.list[i].rno+"'><div class='header' style='display: flex;'><div style='width : 50%;'><strong class'primary-font'>"+data.list[i].replyer+"</strong>";
 						str+="		<small>("+displayTime(data.list[i].replyDate)+")</small></div>";
-						str+="<div style='width:50%;' align='right'><a href='#' onclick='replyGet("+data.list[i].no+")'>수정하기</a>&nbsp; <a href='#' onclick='replydelete("+data.list[i].no+")'>삭제하기</a></div></div>"
+						str+="<div style='width:50%;' align='right'>"
+						
+						//내 댓글 일 경우만 수정하기, 삭제하기 버튼 활성화
+						if(replyer==data.list[i].replyer){
+							str += "<a href='#' onclick='replyGet("+data.list[i].rno+"); return false;'>수정하기</a>&nbsp; <a href='#' onclick='replydelete("+data.list[i].rno+");'>삭제하기</a>"
+						}
+						str+="</div></div>"
 						str+="			<p>"+data.list[i].reply+"</p></div>";
-						str+="<div id='p-input"+data.list[i].no+"'  style='display:none;'>"
-						str+="	<form name='replyModifyForm' id='replyModifyForm'>"
-						str+="		<div style='padding:5px'>"
-						str+="			<label>댓글수정</label><br />"
-						str+="		</div>"
-						str+="		<div style='padding:5px' align='right'>"
-						str+="			<label>작성자</label> <input type='text' class='replyer"+data.list[i].no+"' name='replyer' id='replyer'>"
-						str+="		</div>"
-						str+="		<textarea class='reply"+data.list[i].no+"' rows='4' cols='42' style='width: 100%; height: 80px; padding: 10px; box-sizing: border-box; border: 2px solid #EEEEE; box-sizing: border-box; border-radius: 6px; font-size: 16px;resize: both;' name='reply' id='reply'></textarea>"
-						str+="		<div align='right'>"
-						str+=" 			<button type='button' onclick='replyModify("+data.list[i].no+")' style='margin: 5px'>등록하기</button>"
-						str+="		</div>"	
-						str+="	</form>"
-						str+="</div>"
+						str+="<div id='p-input"+data.list[i].rno+"'  style='display:none;'>"
+						
+						//댓글 수정폼 display none
+						str+="		<form name='replyModifyForm' id='replyModifyForm'>"
+						str+="			<div style='padding:5px'>"
+						str+="				<label>댓글수정</label><br />"
+						str+="			</div>"
+						str+="			<div style='padding:5px' align='right'>"
+						str+="				<label>작성자</label> <input type='text' id='replyer"+data.list[i].rno+"' name='replyer' class='replyerarea'>"
+						str+="			</div>"
+						str+="			<textarea class='replyarea' id ='reply"+data.list[i].rno+"' rows='4' cols='42'name='reply'></textarea>"
+						str+="			<div align='right'>"
+						str+=" 				<button type='button' onclick='replyModify("+data.list[i].rno+")' style='margin: 5px'>등록하기</button>"
+						str+="			</div>"	
+						str+="		</form>"
+						str+="	</div>"
 						str+="</li>"
 					}
 					replyUL.html(str);
@@ -184,19 +229,89 @@
 	
 	//댓글 추가하기
 	function add() {
+		console.log(replyer)
+		if(!replyer) {
+			alert("로그인 후 이용하세요");
+			return false;
+		}
+		
+		
 		 $.ajax({
 	            type : 'post',
 	            url : '/replies/new',
 	            data: $('#replyForm').serialize(),
+	            beforeSend: function(xhr){
+	            	xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+	            },
 	            success : function(data){
 	            	$("#replyer").val("");
 					$("#reply").val("");
-					getList(board_no, pageNumber);
+					getList(bno, pageNumber);
 	            }
 	       	});
 	}
-	
-	//시간 출력
+	    
+    //댓글 가져오기
+    function replyGet(value1) {
+    	document.querySelector('#p-false'+value1).style.display = 'none';
+    	document.querySelector('#p-input'+value1).style.display = 'block';
+    	var url = "/replies/"+value1;
+    	 $.ajax({
+				type: "get",
+				data: value1,
+				dataType:'json',
+				url: url,	
+    			success: function(data) {
+    				console.log(data);	
+    				$("#replyer"+value1).val(data.replyer);
+    				$("#reply"+value1).val(data.reply);
+    			}
+    	 });
+    }
+    
+    //댓글 수정하기 
+    function replyModify(value1){
+    	var url = "/replies/"+value1;
+    	
+    	
+    	var param = {
+    		"rno" : value1,
+    		"replyer" : $("#replyer"+value1).val(),
+    		"reply" : $("#reply"+value1).val()    			
+    	}
+    	
+    	$.ajax({
+            type : 'put',
+            url : '/replies/'+value1,
+            data:JSON.stringify(param),
+            beforeSend: function(xhr){
+            	xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+            },
+            contentType : "application/json; charset=utf-8",
+            success : function(data){
+            	alert('수정되었습니다.!');
+				getList(bno, pageNumber);
+            }
+       	});
+    	 
+    }
+    
+    function replydelete(value1) {
+    	$.ajax({
+            type : 'delete',
+            url : '/replies/'+value1,
+            data: value1,
+            beforeSend: function(xhr){
+            	xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+            },
+            success : function(data){
+            	alert('삭제되었습니다.!');
+				getList(bno, pageNumber);
+            }
+       	});
+    }
+    
+ 	 //시간 출력
 	function displayTime(timeValue) {
         var today = new Date();
 
@@ -221,59 +336,5 @@
             return [yy, '/', (mm > 9 ? '': '0') + mm, '/', (dd > 9 ? '' : '0') + dd].join('');
         }
     };
-    
-    //댓글 가져오기
-    function replyGet(value1) {
-    	document.querySelector('#p-false'+value1).style.display = 'none';
-    	document.querySelector('#p-input'+value1).style.display = 'block';
-    	var url = "/replies/"+value1;
-    	 $.ajax({
-				type: "get",
-				data: value1,
-				dataType:'json',
-				url: url,	
-    			success: function(data) {
-    				console.log(data);	
-    				$(".replyer"+value1).val(data.replyer);
-    				$(".reply"+value1).val(data.reply);
-    			}
-    	 });
-    }
-    
-    //댓글 수정하기 
-    function replyModify(value1){
-    	var url = "/replies/"+value1;
-    	
-    	
-    	var param = {
-    		"no" : value1,
-    		"replyer" : $(".replyer"+value1).val(),
-    		"reply" : $(".reply"+value1).val()    			
-    	}
-    	
-    	$.ajax({
-            type : 'put',
-            url : '/replies/'+value1,
-            data:JSON.stringify(param),
-            contentType : "application/json; charset=utf-8",
-            success : function(data){
-            	alert('수정되었습니다.!');
-				getList(board_no, pageNumber);
-            }
-       	});
-    	 
-    }
-    
-    function replydelete(value1) {
-    	$.ajax({
-            type : 'delete',
-            url : '/replies/'+value1,
-            data: value1,
-            success : function(data){
-            	alert('삭제되었습니다.!');
-				getList(board_no, pageNumber);
-            }
-       	});
-    }
     
 </script>       

@@ -20,12 +20,12 @@ public interface BoardMapper {
 	
 	public int getTotalCount(Criteria cri);
 	
-	public BoardDTO getRead(long no);
+	public BoardDTO getRead(long bno);
 	
-	public int setDelete(long no);
+	public int setDelete(long bno);
 	
 	public int setUpdate(BoardDTO dto);
 	
-	public void updateReplyCnt(@Param("no") long no, @Param("amount") int amount);
+	public void updateReplyCnt(@Param("bno") long bno, @Param("amount") int amount);
 	
 }

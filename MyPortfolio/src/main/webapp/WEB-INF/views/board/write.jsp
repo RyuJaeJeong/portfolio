@@ -4,22 +4,22 @@
 
 <div>
 	<div style="">
-		<h3>Read Page</h3>
+		<h3>write Page</h3>
 	</div>
 	<div style="">
 		<form name="writeForm" method="post" >
-			<input type="text" name="mgr" value='<c:out value="${board.no}" />'>
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			<div class="form-group">
-				<label>Title</label> 
+				<label>Title</label>  
 				<input class="form-control" name="title" >
 			</div>
 			<div class="form-group">
-			    <label>content</label> 
-			    <textarea class="form-control"  name="content" rows="8" cols="85"><c:out value="${board.content}"></c:out></textarea>
+			    <label>content</label>
+			    <textarea class="form-control"  name="content" rows="8" cols="85"></textarea>
 			</div>	
 			<div class="form-group">
 			    <label>Writer</label> 
-			    <input class="form-control" name="writer"/>
+			    <input class="form-control" name="writer" value='<sec:authentication property="principal.username"/>' readonly>
 			</div>		
 				<button type="button" onclick="goWrite()">작성하기</button>
 				<button type="button" onclick="goList()">리스트</button>
@@ -32,7 +32,7 @@
 
 <script>
 function goWrite() {
-	writeForm.action = "/board/write"
+	writeForm.action = "/board/new"
 	writeForm.submit();
 }
 

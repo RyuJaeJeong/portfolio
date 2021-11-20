@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@include file="../includes/header.jsp" %>
-<%@ page trimDirectiveWhitespaces="true" %>
 <div id="contents-block" >
 	<h2>자유&nbsp;게시판</h2>
 	
@@ -31,7 +30,7 @@
 				<c:if test="${board.level <= 1 }">
 					<c:set var="reVar" value="" />
 				</c:if>
-	  		 	<a href='#' onclick='goRead(<c:out value="${board.no}" />)'>
+	  		 	<a href='#' onclick='goRead(<c:out value="${board.bno}" />)'>
 	  				${reVar}<c:out value="${board.title}" /> <b>[<c:out value="${board.replyCnt}" />]</b>
 	  			</a>
 	  		 </td>
@@ -108,7 +107,7 @@ function goRead(value1) {
 }
 
 function goWriteForm() {
-	location.href="/board/write";
+	self.location="/board/new";
 }
 
 $(".paginate_button a").on("click", function(e) {

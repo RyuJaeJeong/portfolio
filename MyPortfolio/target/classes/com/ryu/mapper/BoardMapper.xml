@@ -27,19 +27,19 @@ PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
 		
 
 	<insert id="setInsert">
-		insert into tbl_board(no, title, writer, content) values(seq_board.nextval, #{title},  #{writer},  #{content})
+		insert into tbl_board(bno, title, writer, content) values(seq_board.nextval, #{title},  #{writer},  #{content})
 	</insert>
 	
 	<insert id="setReInsert">
-		insert into tbl_board(no, title, writer, content, mgr) values(seq_board.nextval, #{title},  #{writer},  #{content}, #{mgr})
+		insert into tbl_board(bno, title, writer, content, mgr) values(seq_board.nextval, #{title},  #{writer},  #{content}, #{mgr})
 	</insert>
 	
 	<select id="getList" resultType="com.ryu.dto.BoardDTO">
 	
 		<![CDATA[
-		SELECT no, title, writer, content, regidate
+		SELECT bno, title, writer, content, regidate
 			FROM tbl_board
-			WHERE no > 0 
+			WHERE bno > 0 
 		]]>
 	</select>
 	
@@ -49,7 +49,7 @@ PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
 			FROM (
 			SELECT 
 				/*+INDEX_DESC(tbl_board PK_BOARD) */ 
-				ROWNUM rn, no, title, writer, content, regidate, replycnt, level, mgr
+				ROWNUM rn, bno, title, writer, content, regidate, replycnt, level, mgr
 				FROM tbl_board 
 				WHERE
 		]]>
@@ -57,42 +57,43 @@ PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
 	<![CDATA[		     
 		rownum <= #{pageNumber} * #{amount}
 		START WITH mgr is null
-        CONNECT BY PRIOR no = mgr
-		ORDER SIBLINGS by no desc
+        CONNECT BY PRIOR bno = mgr
+		ORDER SIBLINGS by bno desc
 		) 
 		WHERE rn > (#{pageNumber} -1) * #{amount}
 	]]>
 	</select>
 	
 	<select id="getTotalCount" resultType="int">
-		SELECT count(*) 
-			FROM tbl_board 
-			WHERE no>0
+		select count(*) from tbl_board 
+			where
+		<include refid="criteria"></include>
+			bno>0
 	</select>
 	
 	<select id="getRead" resultType="com.ryu.dto.BoardDTO">
 		
-		SELECT no, title, writer, content, regidate
+		SELECT bno, title, writer, content, regidate
 			FROM tbl_board
-			WHERE no = #{no}
+			WHERE bno = #{bno}
 		
 	</select>
 	
 	<delete id="setDelete">
 		DELETE FROM tbl_board 
-			WHERE no = #{no}
+			WHERE bno = #{bno}
 	</delete>
 	
 	<update id="setUpdate">
 		UPDATE tbl_board 
 			SET title = #{title}, content = #{content}, writer = #{writer}
-			WHERE no = #{no}
+			WHERE bno = #{bno}
 	</update>
 	
 	<update id="updateReplyCnt">
 		UPDATE tbl_board 
 			SET replyCnt = replyCnt + #{amount} 
-			WHERE no = #{no}
+			WHERE bno = #{bno}
 	
 	</update>
 	

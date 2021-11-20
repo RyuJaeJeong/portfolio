@@ -14,7 +14,7 @@
 		<org.slf4j-version>1.7.25</org.slf4j-version>
 	</properties>
 	<dependencies>
-	
+		
 		<!-- 데이터베이스 연결을 위한 -->
 		<!-- 커넥션 풀 -->
 		<dependency>
@@ -198,29 +198,29 @@
 		   
 		<!-- spring-security를 이용하기 위한 메이븐lib 추가 -->
 		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
-		<!--<dependency>
+		<dependency>
 		    <groupId>org.springframework.security</groupId>
 		    <artifactId>spring-security-web</artifactId>
 		    <version>5.0.6.RELEASE</version>
-		</dependency>  -->
+		</dependency>  
 		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
-		<!--<dependency>
+		<dependency>
 		    <groupId>org.springframework.security</groupId>
 		    <artifactId>spring-security-config</artifactId>
 		    <version>5.0.6.RELEASE</version>
-		</dependency>-->
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
-		<!--<dependency>
+		<dependency>
 		    <groupId>org.springframework.security</groupId>
 		    <artifactId>spring-security-core</artifactId>
 		    <version>5.0.6.RELEASE</version>
-		</dependency>-->
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-taglibs -->
-		<!--<dependency>
+		<dependency>
 		    <groupId>org.springframework.security</groupId>
 		    <artifactId>spring-security-taglibs</artifactId>
 		    <version>5.0.6.RELEASE</version>
-		</dependency>-->
+		</dependency>
 		      
 	</dependencies>
     <build>

@@ -3,7 +3,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>      
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %> 
 <html>
 
 <head>
@@ -14,7 +15,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Bootstrap Admin Theme</title>
+    <title>FinanceRyu's portfolio</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="/resources/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -51,6 +52,41 @@
     border: 1px solid #444444;
     padding: 10px;
   }
+  
+  .replyarea {
+   width: 100%; 
+   height: 80px; 
+   padding: 10px; 
+   box-sizing: border-box; 
+   border: 2px solid #EEEEE; 
+   box-sizing: border-box; 
+   border-radius: 6px; 
+   font-size: 16px;
+   resize: both;" 
+  
+  }
+  
+  
+#form-controll {
+  display: block;
+  width: 90%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+       -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+          transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+</style>
+  
 </style>
 	
 </head>
@@ -270,15 +306,15 @@
                     <ul class="dropdown-menu dropdown-user">
                         <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
                         </li>
-                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
                         </li>
                         <li class="divider"></li>
                         <sec:authorize access="isAuthenticated()">
-                        	<li><a href="/customLogout"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
+                        	<li><a href="/customLogout"><i class="fa fa-sign-out fa-fw"></i> 로그아웃</a></li>
                         </sec:authorize>	
                         
                         <sec:authorize access="isAnonymous()">
-                        	<li><a href="/customLogin"><i class="fa fa-sign-out fa-fw"></i> Login</a></li>
+                        	<li><a href="/members/new"><i class="fa fa-sign-out fa-fw"></i> 회원가입</a></li>
+                        	<li><a href="/customLogin"><i class="fa fa-sign-out fa-fw"></i> 로그인</a></li>
                         </sec:authorize>
                         
                         
@@ -320,7 +356,7 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="tables.html"><i class="fa fa-table fa-fw"></i> Tables</a>
+                            <a href="/members"><i class="fa fa-table fa-fw"></i> Member(admin only)</a>
                         </li>
                         <li>
                             <a href="forms.html"><i class="fa fa-edit fa-fw"></i> Forms</a>

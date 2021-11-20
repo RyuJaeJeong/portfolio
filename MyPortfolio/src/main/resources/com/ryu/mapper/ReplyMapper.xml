@@ -5,18 +5,18 @@ PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
 
 <mapper namespace="com.ryu.mapper.ReplyMapper">
 	<insert id="insert">
-		INSERT INTO tbl_reply(no, board_no, reply, replyer)
-		VALUES(seq_reply.nextval, #{board_no}, #{reply}, #{replyer})
+		INSERT INTO tbl_reply(rno, bno, reply, replyer)
+		VALUES(seq_reply.nextval, #{bno}, #{reply}, #{replyer})
 	</insert>
 	
 	<select id="getListWithPaging" resultType="com.ryu.dto.ReplyDTO">
 	<![CDATA[
-		SELECT no, board_no, reply, replyer, replydate
+		SELECT rno, bno, reply, replyer, replydate
 			FROM (
 				SELECT /*+INDEX_DESC(tbl_reply PK_REPLY) */ ROWNUM rn, tbl_reply.*
 			    	FROM tbl_reply
-			    	WHERE board_no = #{bno}
-			    	AND no > 0
+			    	WHERE bno = #{bno}
+			    	AND rno > 0
 			    	AND rownum <= #{cri.pageNumber} * #{cri.amount}
 			) 
 			WHERE rn > (#{cri.pageNumber} -1) * #{cri.amount}
@@ -27,16 +27,16 @@ PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
 		
 		SELECT * 
 			FROM tbl_reply 
-			WHERE no = #{no}
+			WHERE rno = #{rno}
 		
 	</select>
 	
 	
 	<select id="getCountByBno" resultType="int">
 		<![CDATA[
-			SELECT count(no) 
+			SELECT count(rno) 
 				FROM tbl_reply 
-				WHERE board_no=#{board_no}
+				WHERE bno=#{bno}
 		]]>
 	</select>
 	
@@ -44,14 +44,14 @@ PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
 	<delete id="delete">
 	
 		DELETE FROM tbl_reply 
-			WHERE no = #{no}
+			WHERE rno = #{rno}
 	
 	</delete>
 	
 	<update id="update">
 		UPDATE tbl_reply 
 			SET reply = #{reply}, replyer = #{replyer}
-			WHERE no=#{no}
+			WHERE rno=#{rno}
 	</update>
 	
 	

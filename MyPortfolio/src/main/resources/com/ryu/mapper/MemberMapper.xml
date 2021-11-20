@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ryu.mapper.MemberMapper">
+
+<sql id="criteria">
+		<trim prefix="(" suffix=") AND" prefixOverrides="OR">
+			<foreach item='type' collection="typeArr">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'I'.toString()">
+							m.userid like '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'N'.toString()">
+							userName like '%' || #{keyword} || '%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+</sql>
+
+<resultMap type="com.ryu.dto.MemberDTO" id="memberMap">
+	<id property="userid" column="userid"/>
+	<result property="mno" column="mno"/>
+	<result property="userid" column="userid"/>
+	<result property="userpw" column="userpw"/>
+	<result property="userName" column="userName"/>
+	<result property="regiDate" column="regiDate"/>
+	<result property="updateDate" column="updatedate"/>
+	<collection property="authList" resultMap="authMap">
+	</collection>
+</resultMap>
+
+<resultMap type="com.ryu.dto.AuthDTO" id="authMap">
+	<result property="userid" column="userid"/>
+	<result property="auth" column="auth"/>
+</resultMap>
+
+<insert id="setInsertMember">
+	insert into tbl_member(mno, userid, userpw, username) values(seq_member.nextval,#{userid},#{userpw},#{userName})
+</insert>
+
+<insert id="setInsertAuth">
+	insert into tbl_member_auth(userid, auth) values(#{userid}, #{auth})
+</insert>
+
+<select id="getList" resultMap="memberMap">
+	<![CDATA[
+		SELECT *
+			FROM (
+				SELECT /*+INDEX_DESC(tbl_member unique_member) */ ROWNUM rn, m.*, a.auth
+			    	FROM tbl_member m left outer join tbl_member_auth a
+			    	on m.userid = a.userid
+			    	WHERE]]> 
+			    	<include refid="criteria"></include>
+			    	<![CDATA[
+			    	rownum <= #{pageNumber} * #{amount}
+			) 
+			WHERE rn > (#{pageNumber} -1) * #{amount}
+	]]>
+</select>
+
+<select id="getTotalCount" resultType="int">
+			SELECT count(m.mno) 
+				FROM tbl_member m left outer join tbl_member_auth a
+			    on m.userid = a.userid
+			    where
+				 <include refid="criteria"></include>			   
+			    m.mno > 0		
+</select>
+
+<select id="read" resultMap="memberMap">
+	SELECT mno, m.userid, userpw, username, enabled, regidate,auth
+		FROM tbl_member m LEFT OUTER JOIN tbl_member_auth a 
+		ON m.userid = a.userid
+		WHERE m.userid = #{userid}
+</select>
+
+<delete id="setDelete">
+	DELETE FROM TBL_MEMBER
+	WHERE userid = #{userid}
+</delete>
+
+<update id="setUpdateMember">
+	UPDATE TBL_MEMBER
+		SET userid = #{userid}, userpw = #{userpw}, username=#{userName}
+		WHERE userid = #{userid}
+</update>
+
+<select id="checkId" resultType="int">
+	SELECT COUNT(*)
+		FROM TBL_MEMBER
+		WHERE userid = #{userid}
+
+</select>
+
+<update id="setUpdateAuth">
+	UPDATE TBL_MEMBER_AUTH
+		SET auth = #{auth}
+		WHERE userid = #{userid}
+</update>
+
+
+
+</mapper>
