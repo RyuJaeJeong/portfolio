@@ -2,6 +2,7 @@ package com.ryu.security;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -79,13 +80,28 @@ public class MemberTests {
 			
 		}
 	}
- }*/
+ }
  
  @Test
  public void testInsertAuth() {
 	 Criteria cri = new Criteria(1, 10);
 	 List<MemberDTO> list = mapper.getList(cri);
 	 list.forEach(dto -> log.info(dto));
- }
+ }*/
+ @Test
+ public void getDateTime() {
+		Calendar cal = Calendar.getInstance();
+		//System.out.println(cal);
+	
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		int min = cal.get(Calendar.MINUTE);
+		int sec = cal.get(Calendar.SECOND);
+		//System.out.println("현재 시각은 " + year + "년도 " + month + "월 " + day + "일 " + hour + "시 " + min + "분 " + sec + "초입니다.");
+		
+		log.info(year+"/"+month+"/"+day);
+	}
  
 }

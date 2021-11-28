@@ -7,7 +7,7 @@
 	
 	
 	<button type="button" onclick="goWriteForm()"  style="float: right; margin-bottom: 10px">회원추가</button>
-	<table style="border">
+	<table style="border" class="table">
 	  <tr>
 	    <th>회원번호</th>
 	    <th>회원 아이디</th>
@@ -47,7 +47,7 @@
 	
 	<div class='row'>
       	<div class="col-lg-12">
-      		<form id='searchForm' action="/members" method='get'>
+      		<form id='searchForm' action="<%=request.getContextPath()%>/members" method='get'>
       			<select name='type'>
       				<option value="" <c:out value="${pageMaker.cri.type == null?'selected':''}"/> >--</option>
       				<option value="I"<c:out value="${pageMaker.cri.type eq 'I'?'selected':''}"/>>아이디</option>
@@ -80,7 +80,7 @@
                             
 	</div>
 	<!-- 조회 페이지, 수정 페이지에서 리스트로 복귀시 검색내역과 페이지를 유지하기 위해 넘겨줘야할 값들 -->
-	 <form id='actionForm' action="/members" method='get'>
+	 <form id='actionForm' action="<%=request.getContextPath()%>/members" method='get'>
       	<input type="hidden" name='pageNumber' value = '${pageMaker.cri.pageNumber}'>
      	<input type="hidden" name='amount' value = '${pageMaker.cri.amount}'>
      	<input type="hidden" name='type' value='<c:out value="${pageMaker.cri.type}" />' />
@@ -92,15 +92,22 @@
 
 <script>
 
+function getContextPath() {
+	var hostIndex = location.href.indexOf( location.host ) + location.host.length;
+	return location.href.substring( hostIndex, location.href.indexOf('/', hostIndex + 1) );
+};
+
+var contextPath = getContextPath();
+
 var actionForm = $("#actionForm");
 
 function goRead(value1) {
-	actionForm.attr("action", "/members/"+value1);
+	actionForm.attr("action", contextPath + "/members/"+value1);
 	actionForm.submit();
 }
 
 function goWriteForm() {
-	self.location="/members/new";
+	self.location= contextPath + "/members/new";
 }
 
 $(".paginate_button a").on("click", function(e) {

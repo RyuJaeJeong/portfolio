@@ -1,5 +1,8 @@
 package com.ryu.mapper;
+import java.util.Date;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 
 import com.ryu.common.Criteria;
 import com.ryu.dto.AuthDTO;
@@ -27,4 +30,6 @@ public interface MemberMapper {
 	
 	public int checkId(String userId);
 	
+	
+	public void updatestatistics(@Param("mno") long mno, @Param("regidate") Date regidate);
 }

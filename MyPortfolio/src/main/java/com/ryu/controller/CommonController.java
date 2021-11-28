@@ -22,11 +22,11 @@ public class CommonController {
 		log.info("logout: " + logout);
 		
 		if(error != null) {
-			model.addAttribute("error", "login error check your account");
+			model.addAttribute("error", "<script>alert('아이디, 혹은 비밀번호를 확인해 주세요!!.')</script>");
 		}
 		
 		if(logout != null) {
-			model.addAttribute("logout", "로그아웃되었습니다.");
+			model.addAttribute("logout", "<script>alert('로그아웃되었습니다.')</script>");
 		}
 		
 	}

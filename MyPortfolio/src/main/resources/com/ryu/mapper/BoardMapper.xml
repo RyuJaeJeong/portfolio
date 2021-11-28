@@ -26,13 +26,22 @@ PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
 	</sql>
 		
 
-	<insert id="setInsert">
-		insert into tbl_board(bno, title, writer, content) values(seq_board.nextval, #{title},  #{writer},  #{content})
+	<insert id="setInsert" useGeneratedKeys="true" keyProperty="bno" parameterType="com.ryu.dto.BoardDTO">
+		<selectKey keyProperty="bno" order="BEFORE" resultType="long">
+			select seq_board.nextval from dual
+		</selectKey>
+		insert into tbl_board(bno, title, writer, content) values(#{bno}, #{title},  #{writer},  #{content})
 	</insert>
 	
 	<insert id="setReInsert">
 		insert into tbl_board(bno, title, writer, content, mgr) values(seq_board.nextval, #{title},  #{writer},  #{content}, #{mgr})
 	</insert>
+	
+	<insert id="updatestatistics">
+		insert into tbl_statistics(sno, board, regidate) 
+			values(seq_statistics.nextval, #{bno}, #{regidate})
+	</insert>
+	
 	
 	<select id="getList" resultType="com.ryu.dto.BoardDTO">
 	

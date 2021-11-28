@@ -16,7 +16,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 			AccessDeniedException accessDeniedException) throws IOException, ServletException {
 		log.error("Access Denied Handler");
 		log.error("Redirect");
-		response.sendRedirect("/accessError");
+		String path = request.getContextPath();
+		response.sendRedirect(path + "/accessError");
 	}
 
 }

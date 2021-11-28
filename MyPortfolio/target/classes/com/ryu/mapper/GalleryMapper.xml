@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ryu.mapper.GalleryMapper">
+
+	<sql id="criteria">
+		<trim prefix="(" suffix=") AND" prefixOverrides="OR">
+			<foreach item='type' collection="typeArr">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'T'.toString()">
+							title like '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'C'.toString()">
+							filename like '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'W'.toString()">
+							writer like '%' || #{keyword} || '%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+	
+
+	<insert id="setInsert" useGeneratedKeys="true" keyProperty="bno" parameterType="com.ryu.dto.GalleryDTO">
+		<selectKey keyProperty="gno" order="BEFORE" resultType="long">
+			select seq_gallery.nextval from dual
+		</selectKey>
+		insert into tbl_gallery(gno, title, writer, comments, uploadPath, uuid, fileName) values(seq_gallery.nextval, #{title},  #{writer},  #{comments}, #{uploadPath},  #{uuid},  #{fileName})
+	</insert>
+	
+	<insert id="updatestatistics">
+		insert into tbl_statistics(sno, gallery, regidate)
+			values(seq_statistics.nextval, #{gno}, #{regidate})
+	</insert>
+	
+	<select id="getListWithPaging" resultType="com.ryu.dto.GalleryDTO">
+	<![CDATA[
+		SELECT * 
+			FROM (
+			SELECT 
+				/*+INDEX_DESC(tbl_gallery PK_gallery) */ 
+				ROWNUM rn, gno, title, writer, comments, uploadpath, uuid, fileName
+				FROM tbl_gallery 
+				WHERE
+		]]>
+		<include refid="criteria"></include>
+	<![CDATA[
+			rownum <= #{pageNumber} * #{amount}
+			) 
+			WHERE rn > (#{pageNumber} -1) * #{amount}
+	]]>
+	</select>
+	<select id="getTotalCount" resultType="int">
+			SELECT count(gno) 
+				FROM tbl_gallery
+			    where
+			    <include refid="criteria"></include>
+			     gno > 0		
+	</select>
+	<select id="getRead" resultType="com.ryu.dto.GalleryDTO">
+		
+		SELECT gno, title, writer, comments,  uploadpath, uuid, fileName
+			FROM tbl_gallery
+			WHERE gno = #{gno}
+		
+	</select>
+	
+	<delete id="setDelete">
+		DELETE FROM tbl_gallery 
+			WHERE gno = #{gno}
+	</delete>
+	
+	<update id="setUpdate">
+		UPDATE tbl_gallery 
+			SET title = #{title}, comments = #{comments}, writer = #{writer}, uploadpath = #{uploadPath}, uuid = #{uuid}, fileName = #{fileName}
+			WHERE gno = #{gno}
+	</update>
+	
+</mapper>

@@ -48,14 +48,21 @@
 
 <%@include file="../includes/footer.jsp" %>
 <script>
+function getContextPath() {
+	var hostIndex = location.href.indexOf( location.host ) + location.host.length;
+	return location.href.substring( hostIndex, location.href.indexOf('/', hostIndex + 1) );
+};
+
+var contextPath = getContextPath();
+
 	function goList() {
-		operForm.action = "/members";
+		operForm.action = contextPath + "/members";
 		operForm.submit();
 	}
 	
 	
 	function goModifyForm(value1) {
-		operForm.action = "/members/"+value1+"/edit";
+		operForm.action = contextPath +"/members/"+value1+"/edit";
 		operForm.submit();
 	}
 	

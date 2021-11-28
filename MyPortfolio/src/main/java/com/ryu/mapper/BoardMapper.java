@@ -1,5 +1,6 @@
 package com.ryu.mapper;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -28,4 +29,6 @@ public interface BoardMapper {
 	
 	public void updateReplyCnt(@Param("bno") long bno, @Param("amount") int amount);
 	
+	public void updatestatistics(@Param("bno") long bno, @Param("regidate") Date regidate);
+
 }

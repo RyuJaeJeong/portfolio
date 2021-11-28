@@ -39,12 +39,19 @@ PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
 	<result property="auth" column="auth"/>
 </resultMap>
 
-<insert id="setInsertMember">
-	insert into tbl_member(mno, userid, userpw, username) values(seq_member.nextval,#{userid},#{userpw},#{userName})
+<insert id="setInsertMember" useGeneratedKeys="true" keyProperty="mno" parameterType="com.ryu.dto.MemberDTO">
+	<selectKey keyProperty="mno" order="BEFORE" resultType="long">
+		select seq_member.nextval from dual
+	</selectKey>
+	insert into tbl_member(mno, userid, userpw, username) values(#{mno},#{userid},#{userpw},#{userName})
 </insert>
 
 <insert id="setInsertAuth">
 	insert into tbl_member_auth(userid, auth) values(#{userid}, #{auth})
+</insert>
+
+<insert id="updatestatistics">
+		insert into tbl_statistics(sno, member, regidate) values(seq_statistics.nextval, #{mno}, #{regidate})
 </insert>
 
 <select id="getList" resultMap="memberMap">

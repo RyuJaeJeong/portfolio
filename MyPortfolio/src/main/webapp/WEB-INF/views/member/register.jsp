@@ -13,30 +13,21 @@
 			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			<label>아이디</label> <br>
 			<div class="form-group" >
-				
-				
-					<input type="text" id="form-controll" class="form-controll" name="userid">
-				
-				
-					<label id="label_id"></label>
-				
+				<input type="text" id="form-controll" class="form-controll" name="userid">
+				<label id="label_id"></label>
 			</div>
-			
-			
 			<div class="form-group">
 			    <label>비밀번호</label> 
-			    <input class="form-control" name="userpw" id="userpw">
+			    <input class="form-control" type="password" name="userpw" id="userpw">
 			</div>
-			
 			<div class="form-group">
 			    <label>비밀번호 확인</label> 
-			    <input class="form-control" type = "text" name="passcheck" id="passcheck">
+			    <input class="form-control"  type = "password" name="passcheck" id="passcheck">
 			    <label id="label_pass"></label>
 			</div>
-			
 			<div class="form-group">
 			    <label>이름</label> 
-			    <input class="form-control" name="userName" >
+			    <input class="form-control" name="userName"  id="userName">
 			</div>		
 			<input type="hidden" name="auth" value="ROLE_USER">
 				<button type="button" onclick="goWrite()">가입하기</button>
@@ -57,6 +48,15 @@ var csrfHeaderName = "${_csrf.headerName}";
 var csrfTokenValue = "${_csrf.token}"
 
 var number;
+
+function getContextPath() {
+	var hostIndex = location.href.indexOf( location.host ) + location.host.length;
+	return location.href.substring( hostIndex, location.href.indexOf('/', hostIndex + 1) );
+};
+
+var contextPath = getContextPath();
+
+
 
 $("#form-controll").on("propertychange change keyup paste input", function() {
 	id_check_div();
@@ -96,12 +96,54 @@ function pass_check_div() {			//아이디 중복 체크
 
 
 function goWrite() {
-	writeForm.action = "/members/new"
+	var userid = $("#form-controll").val();
+	var userpw = $("#userpw").val();
+	var userName = $("#userName").val();
+	var passcheck = $("#passcheck").val();
+	
+	if(!userid) {
+		alert(userid);
+		alert('아이디를 입력 해주세요.');
+		return;
+	}
+	
+	if(userid.length >= 25) {
+		alert('아이디는 최대 25자 까지만 가능합니다.');
+		return;
+	}
+	
+	if(!userpw) {
+		alert('비밀번호 입력해 주세요.');
+		return;
+	}
+	
+	if(userpw.length >= 50) {
+		alert('비밀번호는 최대 50자 까지만 가능합니다.');
+		return;
+	}
+	
+	if(!passcheck) {
+		alert('비밀번호 입력해 주세요.');
+		return;
+	}
+	
+	if(!userName) {
+		alert('이름을 입력해 주세요.');
+		return;
+	}
+	
+	if(userName.length >= 50) {
+		alert('이름은 최대 50자 까지만 가능합니다.');
+		return;
+	}
+	
+	alert('가입에 성공하였습니다.!');
+	writeForm.action = contextPath+"/members/new"
 	writeForm.submit();
 }
 	
 	function goList() {
-		location.href='/members';
+		location.href= contextPath+'/members';
 	}
 	var number; 
 	 function id_check_div() {			//아이디 중복 체크 
@@ -123,7 +165,7 @@ function goWrite() {
 	    	    	type: "post",
 	    	    	data: param,
 	    	    	dataType:'json',
-	    	    	url: "/members/new/checkuserid",
+	    	    	url: contextPath + "/members/new/checkuserid",
 	    	    	beforeSend: function(xhr){
 	 	            	xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
 	 	            },

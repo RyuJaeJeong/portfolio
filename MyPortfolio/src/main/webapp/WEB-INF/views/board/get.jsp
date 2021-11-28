@@ -5,6 +5,7 @@
 <div id="readPage">
 	<div style="">
 		<h3>상세보기</h3>
+		<br>
 	</div>
 	<div style="">
 		<form name="readForm" method="get" >
@@ -104,31 +105,25 @@
 
 <%@include file="../includes/footer.jsp" %>
 <script>
-$(document).ready(function(){
-	
-	if (typeof jQuery == 'undefined') {
 
-		alert("없음");
+function getContextPath() {
+	var hostIndex = location.href.indexOf( location.host ) + location.host.length;
+	return location.href.substring( hostIndex, location.href.indexOf('/', hostIndex + 1) );
+};
 
-		}else{
-
-		alert("있음");
-
-		}
-	
-});
+var contextPath = getContextPath();
 
 	function goList() {
-		operForm.action = "/board";
+		operForm.action = contextPath + "/board";
 		operForm.submit();
 	}
 	
 	function goAnswer(value1) {
-		location.href = "/board/"+value1 +"/answer";
+		location.href = contextPath + "/board/"+value1 +"/answer";
 	}
 	
 	function goModifyForm(value1) {
-		operForm.action = "/board/"+value1+"/edit";
+		operForm.action = contextPath + "/board/"+value1+"/edit";
 		operForm.submit();
 	}
 	/*----------------------댓글 관련 처리들--------------------------------*/
@@ -158,7 +153,7 @@ $(document).ready(function(){
 	    	"bno" : value1,
 	    	"page" : value2
 	    }
-		var url = "/replies/pages/"+value1+"/"+value2;
+		var url = contextPath + "/replies/pages/"+value1+"/"+value2;
 		
 	   $.ajax({
 				type: "get",
@@ -184,15 +179,15 @@ $(document).ready(function(){
 						}
 						str+="</div></div>"
 						str+="			<p>"+data.list[i].reply+"</p></div>";
-						str+="<div id='p-input"+data.list[i].rno+"'  style='display:none;'>"
 						
 						//댓글 수정폼 display none
+						str+="<div id='p-input"+data.list[i].rno+"'  style='display:none;'>"
 						str+="		<form name='replyModifyForm' id='replyModifyForm'>"
 						str+="			<div style='padding:5px'>"
 						str+="				<label>댓글수정</label><br />"
 						str+="			</div>"
 						str+="			<div style='padding:5px' align='right'>"
-						str+="				<label>작성자</label> <input type='text' id='replyer"+data.list[i].rno+"' name='replyer' class='replyerarea'>"
+						str+="				<label>작성자</label> <input type='text' id='replyer"+data.list[i].rno+"' name='replyer' class='replyerarea' readonly>"
 						str+="			</div>"
 						str+="			<textarea class='replyarea' id ='reply"+data.list[i].rno+"' rows='4' cols='42'name='reply'></textarea>"
 						str+="			<div align='right'>"
@@ -230,21 +225,25 @@ $(document).ready(function(){
 	//댓글 추가하기
 	function add() {
 		console.log(replyer)
+		var reply = $("#reply").val();
 		if(!replyer) {
 			alert("로그인 후 이용하세요");
 			return false;
 		}
 		
+		if(!reply) {
+			alert("댓글 내용을 입력하세요");
+			return false;
+		}
 		
 		 $.ajax({
 	            type : 'post',
-	            url : '/replies/new',
+	            url : contextPath + '/replies/new',
 	            data: $('#replyForm').serialize(),
 	            beforeSend: function(xhr){
 	            	xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
 	            },
 	            success : function(data){
-	            	$("#replyer").val("");
 					$("#reply").val("");
 					getList(bno, pageNumber);
 	            }
@@ -255,7 +254,7 @@ $(document).ready(function(){
     function replyGet(value1) {
     	document.querySelector('#p-false'+value1).style.display = 'none';
     	document.querySelector('#p-input'+value1).style.display = 'block';
-    	var url = "/replies/"+value1;
+    	var url =  contextPath + "/replies/"+value1;
     	 $.ajax({
 				type: "get",
 				data: value1,
@@ -271,7 +270,12 @@ $(document).ready(function(){
     
     //댓글 수정하기 
     function replyModify(value1){
-    	var url = "/replies/"+value1;
+    	var url =  contextPath + "/replies/"+value1;
+    	
+		if(!$("#reply"+value1).val()) {
+			alert("댓글 내용을 입력하세요");
+			return false;
+		}
     	
     	
     	var param = {
@@ -282,7 +286,7 @@ $(document).ready(function(){
     	
     	$.ajax({
             type : 'put',
-            url : '/replies/'+value1,
+            url :  contextPath + '/replies/'+value1,
             data:JSON.stringify(param),
             beforeSend: function(xhr){
             	xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
@@ -299,7 +303,7 @@ $(document).ready(function(){
     function replydelete(value1) {
     	$.ajax({
             type : 'delete',
-            url : '/replies/'+value1,
+            url :  contextPath + '/replies/'+value1,
             data: value1,
             beforeSend: function(xhr){
             	xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);

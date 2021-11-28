@@ -4,18 +4,19 @@
 
 <div>
 	<div style="">
-		<h3>write Page</h3>
+		<h3>Write Page</h3>
+		<br>
 	</div>
 	<div style="">
 		<form name="writeForm" method="post" >
 			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			<div class="form-group">
 				<label>Title</label>  
-				<input class="form-control" name="title" >
+				<input class="form-control" name="title" id="title" >
 			</div>
 			<div class="form-group">
 			    <label>content</label>
-			    <textarea class="form-control"  name="content" rows="8" cols="85"></textarea>
+			    <textarea class="form-control" id="content" name="content" rows="8" cols="85"></textarea>
 			</div>	
 			<div class="form-group">
 			    <label>Writer</label> 
@@ -31,13 +32,39 @@
 <%@include file="../includes/footer.jsp" %>
 
 <script>
+function getContextPath() {
+	var hostIndex = location.href.indexOf( location.host ) + location.host.length;
+	return location.href.substring( hostIndex, location.href.indexOf('/', hostIndex + 1) );
+};
+
+var contextPath = getContextPath();
+
 function goWrite() {
-	writeForm.action = "/board/new"
+	
+	var title = $("#title").val();
+	var content = $("#content").val();
+	
+	if(!title) {
+		alert('제목을 입력 해주세요.');
+		return;
+	}
+	
+	if(title.length >= 500) {
+		alert('제목은 최대 500자 까지만 가능합니다.');
+		return;
+	}
+	
+	if(!content) {
+		alert('내용을 입력해 주세요.');
+		return;
+	}
+	
+	writeForm.action = contextPath + "/board/new"
 	writeForm.submit();
 }
 
 function goList() {
-	location.href='/board';
+	location.href= contextPath + '/board';
 }
 
 </script>

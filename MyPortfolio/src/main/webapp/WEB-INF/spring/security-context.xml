@@ -10,6 +10,8 @@
 <bean id="customAccessDenied" class="com.ryu.security.CustomAccessDeniedHandler"></bean>
 
 <security:http>
+	<security:intercept-url pattern="/gallery" access="permitAll" />
+	<security:intercept-url pattern="/gallery/new" access="hasAnyRole('ROLE_MEMBER, ROLE_ADMIN')" />
 	<security:intercept-url pattern="/members" access="hasRole('ROLE_ADMIN')" />
 	<security:intercept-url pattern="/members/new" access="permitAll" />
 	<security:intercept-url pattern="/members/new/checkuserid" access="permitAll" />

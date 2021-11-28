@@ -1,7 +1,7 @@
 package com.ryu.controller;
 
-import java.util.List;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -17,10 +17,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.ryu.common.Criteria;
 import com.ryu.common.PageDTO;
 import com.ryu.dto.BoardDTO;
-
 import com.ryu.service.BoardService;
-
 import lombok.Setter;
+
 
 
 
@@ -34,6 +33,7 @@ public class BoardController {
 	
 	@RequestMapping(value="/board", method = RequestMethod.GET)
 	public ModelAndView getList(Criteria cri) {
+		
 		List<BoardDTO> list = service.getList(cri);
 		int total = service.getTotalCount(cri);
 		PageDTO dto = new PageDTO(cri, total);
@@ -69,7 +69,6 @@ public class BoardController {
 	
 	//글쓰기 제출
 	@PostMapping(value="/board/new")
-	@PreAuthorize("isAuthenticated()")
 	public String setInsert(BoardDTO dto) {
 		if(dto.getMgr()>0) {
 			service.setReInsert(dto);
@@ -101,13 +100,17 @@ public class BoardController {
 	@PutMapping(value="/board/{bno}")
 	public String setUpdate(BoardDTO dto, Criteria cri, @PathVariable("bno") long bno) {
 		service.setUpdate(dto);
-		return "redirect:/board";
+		String temp = cri.getListLink();
+		System.out.println(temp);
+		return "redirect:/board" + temp;
 	}
 	
 	//삭제하기
 	@DeleteMapping(value="/board/{bno}")
 	public String setDelete(Criteria cri, @PathVariable("bno") long bno) {
 		service.setDelete(bno);
-		return "redirect:/board";
+		String temp = cri.getListLink();
+		System.out.println(temp);
+		return "redirect:/board" + temp;
 	}
 }

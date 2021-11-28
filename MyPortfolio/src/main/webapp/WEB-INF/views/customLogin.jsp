@@ -9,22 +9,22 @@
 <title>Insert title here</title>
 
  <!-- Bootstrap Core CSS -->
-    <link href="/resources/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<%=request.getContextPath()%>/resources/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- MetisMenu CSS -->
-    <link href="/resources/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    <link href="<%=request.getContextPath()%>/resources/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="/resources/dist/css/sb-admin-2.css" rel="stylesheet">
+    <link href="<%=request.getContextPath()%>/resources/dist/css/sb-admin-2.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="/resources/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="<%=request.getContextPath()%>/resources/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
 </head>
 <body>
 
-<h2><c:out value="${error}" /></h2>
-<h2><c:out value="${logout}" /></h2>
+${error}
+${logout }
 
 <div class="container">
         <div class="row">
@@ -34,7 +34,7 @@
                         <h3 class="panel-title">Please Sign In</h3>
                     </div>
                     <div class="panel-body">
-						<form method='post' action="/login">
+						<form method='post' action="<%=request.getContextPath()%>/login">
 							<fieldset>
 						          <div class="form-group">
 						              <input class="form-control" placeholder="아이디를 입력해주세요" name="username" type="email" autofocus>
@@ -48,10 +48,11 @@
 						              </label>
 						          </div>
 						          <!-- Change this to a button or input when using this as a form -->
-						          <a href="index.html" class="btn btn-lg btn-success btn-block">Login</a>
+						          <a href="#" class="btn btn-lg btn-success btn-block">Login</a>
 						      </fieldset>
 							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 						</form>
+						<a href="<%=request.getContextPath()%>/">홈으로</a>
 					 </div>
                 </div>
             </div>
@@ -60,16 +61,16 @@
 
 
 <!-- jQuery -->
-<script src="/resources/vendor/jquery/jquery.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/vendor/jquery/jquery.min.js"></script>
 
 <!-- Bootstrap Core JavaScript -->
-<script src="/resources/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/vendor/bootstrap/js/bootstrap.min.js"></script>
 
 <!-- Metis Menu Plugin JavaScript -->
-<script src="/resources/vendor/metisMenu/metisMenu.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/vendor/metisMenu/metisMenu.min.js"></script>
 
 <!-- Custom Theme JavaScript -->
-<script src="/resources/dist/js/sb-admin-2.js"></script>
+<script src="<%=request.getContextPath()%>/resources/dist/js/sb-admin-2.js"></script>
 
 <script>
 $(".btn-success").on("click", function(e){

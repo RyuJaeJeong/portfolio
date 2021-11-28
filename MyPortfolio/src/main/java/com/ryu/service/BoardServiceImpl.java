@@ -1,8 +1,13 @@
 package com.ryu.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.ryu.common.Criteria;
 import com.ryu.dto.BoardDTO;
 import com.ryu.mapper.BoardMapper;
@@ -21,10 +26,31 @@ public class BoardServiceImpl implements BoardService {
 		log.info("getListWithPaging-------------"+cri);
 		return mapper.getListWithPaging(cri);
 	}
-
+	
+	@Transactional
 	@Override
 	public void setInsert(BoardDTO dto) {
 		mapper.setInsert(dto);
+		long no = dto.getBno();
+		
+		Calendar cal = Calendar.getInstance();
+		
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+		
+		String temp = year+"/"+month+"/"+day;
+		
+		Date regidate = null;
+		try {
+			SimpleDateFormat transFormat = new SimpleDateFormat("yyyy/MM/dd");
+			regidate = transFormat.parse(temp);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		mapper.updatestatistics(no, regidate);
 	}
 
 	@Override

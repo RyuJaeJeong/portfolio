@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ryu.mapper.StatisticsMapper">
+
+	<select id="getList" resultType="com.ryu.dto.StatisticsDTO">
+			SELECT regidate, count(board) board, count(member) member, count(gallery) gallery 
+			    FROM tbl_statistics
+			    GROUP BY regidate
+			    ORDER BY regidate desc
+	</select>
+
+</mapper>

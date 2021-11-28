@@ -1,5 +1,9 @@
 package com.ryu.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,13 +28,28 @@ public class MemberServiceImpl implements MemberService {
 	
 	@Transactional
 	@Override
-	public void setInsert(MemberDTO dto) {
+	public void setInsert(MemberDTO dto){
 	   BCryptPasswordEncoder scpwd = new BCryptPasswordEncoder();
 	   String password = scpwd.encode(dto.getUserpw());	        
 	   dto.setUserpw(password);
 	   AuthDTO auth = dto.getAuthList().get(0);
 	   mapper.setInsertMember(dto);
 	   mapper.setInsertAuth(auth);
+	   Calendar cal = Calendar.getInstance();
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+		String temp = year+"/"+month+"/"+day;
+		Date regidate = null;
+		try {
+			SimpleDateFormat transFormat = new SimpleDateFormat("yyyy/MM/dd");
+			regidate = transFormat.parse(temp);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
+	    mapper.updatestatistics(dto.getMno(), regidate);
 	}
 
 	@Override
